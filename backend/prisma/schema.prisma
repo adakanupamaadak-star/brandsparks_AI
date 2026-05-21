@@ -1,0 +1,52 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    String     @id @default(cuid())
+  email String     @unique
+  password String
+  name  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  brandProfile BrandProfile?
+  generatedContent GeneratedContent[]
+}
+
+model BrandProfile {
+  id    String     @id @default(cuid())
+  userId String @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name String?
+  description String?
+  industry String?
+  targetAudience String?
+  voiceProfile Json? // {tone, personality, style}
+  guidelines String?
+  keywords String[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GeneratedContent {
+  id    String     @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type String // BLOG, AD_COPY, SOCIAL_MEDIA, EMAIL, SEO_CONTENT
+  title String
+  content String @db.Text
+  metadata Json? // Platform-specific data
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
