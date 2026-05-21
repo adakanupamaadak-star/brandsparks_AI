@@ -1,0 +1,10 @@
+.next
+node_modules
+.env.local
+.env.production.local
+.env
+dist
+build
+.DS_Store
+.swp
+.swo
